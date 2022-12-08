@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker build -t wgvpn "$(dirname "$0")"

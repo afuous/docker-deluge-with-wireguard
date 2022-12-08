@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ ! "$(lsmod | grep '^ip6_tables')" ]; then
+	sudo modprobe ip6_tables
+fi
+
+source "$(dirname "$0")/config"
+
+mkdir -p "$(dirname "$0")/deluge-config"
+
+# pass -d to daemonize
+docker run \
+	--rm \
+	--cap-add NET_ADMIN \
+	--cap-add SYS_MODULE \
+	--privileged \
+	--sysctl net.ipv6.conf.all.disable_ipv6=0 \
+	--name wgvpn \
+	-p 127.0.0.1:8112:8112 \
+	-v "$(realpath "$(dirname "$0")")/wg-configs:/wg-configs" \
+	-v "$(realpath "$DOWNLOADS"):/downloads" \
+	-v "$(realpath "$(dirname "$0")")/deluge-config:/deluge-config" \
+	-v "$(realpath "$(dirname "$0")")/entrypoint.sh:/entrypoint.sh" \
+	$@ \
+	wgvpn $(id -u) $(id -g)
