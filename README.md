@@ -6,6 +6,7 @@ Torrent privately without messing up network settings.
 
 - `cp config.example config` and fill in the downloads directory for torrent data
 - `mkdir wg-configs` and copy in wireguard config files
+- `mkdir deluge-config; cp original-core.conf deluge-config/core.conf`
 
 ## Usage
 

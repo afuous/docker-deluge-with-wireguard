@@ -6,8 +6,6 @@ fi
 
 source "$(dirname "$0")/config"
 
-mkdir -p "$(dirname "$0")/deluge-config"
-
 # pass -d to daemonize
 docker run \
 	--rm \
