@@ -29,7 +29,16 @@ iptables -I OUTPUT -d 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16 -j ACCEPT
 # default password is deluge
 sed -i 's/this\.passwordField\.focus(true, 300)/this.onLogin()/' /usr/lib/python3/dist-packages/deluge/ui/web/js/deluge-all-debug.js
 
-su $username -c 'deluged --config=/deluge-config'
-su $username -c 'deluge-web --config=/deluge-config --interface=0.0.0.0'
+su $username -c 'deluged --config=/deluge-config -d' &
+delugedpid=$!
+su $username -c 'deluge-web --config=/deluge-config --interface=0.0.0.0 -d' &
+delugewebpid=$!
 
-sleep infinity
+sigterm() {
+	# these are the pids of su, not of deluged and deluge-web
+	kill $delugedpid $delugewebpid
+	wait
+}
+trap sigterm TERM
+
+wait
